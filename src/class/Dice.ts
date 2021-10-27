@@ -51,18 +51,22 @@ export default class Dice {
   rollAdvantage = (): AdvantageDisadvantageRoll => {
     const results: number[] = this.rollMultiple(2)
     return {
-      value: Math.max(...results),
-      results,
-      type: 'advantage',
+      result: Math.max(...results),
+      data: {
+        type: 'advantage',
+        rolls: results,
+      },
     }
   }
 
   rollDisadvantage = (): AdvantageDisadvantageRoll => {
     const results: number[] = this.rollMultiple(2)
     return {
-      value: Math.min(...results),
-      results,
-      type: 'disadvantage',
+      result: Math.min(...results),
+      data: {
+        type: 'disadvantage',
+        rolls: results,
+      },
     }
   }
 }

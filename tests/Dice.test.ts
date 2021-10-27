@@ -1,51 +1,47 @@
 import { Dice } from '~/class'
+
 import 'jest-chain'
 
 describe('Dice: Initialization', () => {
   test('Initializing with float throws TypeError', () => {
-    expect(() => {
-      new Dice(1.1)
-    }).toThrow(TypeError)
+    expect(() => new Dice(1.1)).toThrow(TypeError)
   })
 
   test('Initializing with invalid types throws TypeError', () => {
-    expect(() => {
-      //@ts-ignore
-      new Dice('wow')
-    }).toThrow(TypeError)
-    expect(() => {
-      //@ts-ignore
-      new Dice(true)
-    }).toThrow(TypeError)
-    expect(() => {
-      //@ts-ignore
-      new Dice(null)
-    }).toThrow(TypeError)
+    expect(
+      () =>
+        // @ts-ignore
+        new Dice('wow'),
+    ).toThrow(TypeError)
+    expect(
+      () =>
+        // @ts-ignore
+        new Dice(true),
+    ).toThrow(TypeError)
+    expect(
+      () =>
+        // @ts-ignore
+        new Dice(null),
+    ).toThrow(TypeError)
   })
 
   test('Initializing with negative number throws RangeError', () => {
-    expect(() => {
-      new Dice(-1)
-    }).toThrow(RangeError)
+    expect(() => new Dice(-1)).toThrow(RangeError)
   })
 
   test('Initializing with sides greater than 1,000,000,000 throws RangeError', () => {
-    expect(() => {
-      new Dice(1000000001)
-    }).toThrow(RangeError)
+    expect(() => new Dice(1000000001)).toThrow(RangeError)
   })
 
   test('Initializing with error should not return a value', () => {
     let diceTypeError
     let diceRangeError
 
-    try {
-      //@ts-ignore
-      diceTypeError = new Dice('wow')
-    } catch (e) {}
-    try {
-      diceRangeError = new Dice(-1)
-    } catch (e) {}
+    // @ts-ignore
+    diceTypeError = new Dice('wow')
+    // @ts-ignore
+    diceRangeError = new Dice(-1)
+
     expect(diceTypeError).not.toBeInstanceOf(Dice)
     expect(diceRangeError).not.toBeInstanceOf(Dice)
   })
@@ -91,7 +87,7 @@ describe('Dice: Rolling', () => {
   test('rollMultiple with float @params:times throws TypeError', () => {
     const dice = new Dice()
     expect(() => {
-      //@ts-ignore
+      // @ts-ignore
       dice.rollMultiple(1.1)
     }).toThrow(TypeError)
   })
@@ -99,15 +95,15 @@ describe('Dice: Rolling', () => {
   test('rollMultiple with invalid types throws TypeError', () => {
     const dice = new Dice()
     expect(() => {
-      //@ts-ignore
+      // @ts-ignore
       dice.rollMultiple('wow')
     }).toThrow(TypeError)
     expect(() => {
-      //@ts-ignore
+      // @ts-ignore
       dice.rollMultiple(true)
     }).toThrow(TypeError)
     expect(() => {
-      //@ts-ignore
+      // @ts-ignore
       dice.rollMultiple(null)
     }).toThrow(TypeError)
   })
@@ -115,7 +111,7 @@ describe('Dice: Rolling', () => {
   test('rollMultiple with negative @params:times throws RangeError', () => {
     const dice = new Dice()
     expect(() => {
-      //@ts-ignore
+      // @ts-ignore
       dice.rollMultiple(-1)
     }).toThrow(RangeError)
   })
@@ -123,7 +119,7 @@ describe('Dice: Rolling', () => {
   test('rollMultiple with @params:times over 1000 throws RangeError', () => {
     const dice = new Dice()
     expect(() => {
-      //@ts-ignore
+      // @ts-ignore
       dice.rollMultiple(1001)
     }).toThrow(RangeError)
   })
@@ -142,75 +138,97 @@ describe('Dice: Rolling', () => {
 describe('Dice: Rolling Advantage/Disadvantage', () => {
   test('rollAdvantage returns the proper format (15)', () => {
     const dice = new Dice()
+    const testLow = 5
+    const testHigh = 15
 
-    jest.spyOn(dice, 'rollMultiple').mockReturnValue([5, 15])
-    let result = dice.rollAdvantage()
+    jest.spyOn(dice, 'rollMultiple').mockReturnValue([testLow, testHigh])
+    const roll = dice.rollAdvantage()
     jest.spyOn(dice, 'rollMultiple').mockRestore()
 
-    expect(result)
+    expect(roll)
       .toBeInstanceOf(Object)
-      .toHaveProperty('value')
-      .toHaveProperty('results')
+      .toHaveProperty('result')
+      .toHaveProperty('data')
+    expect(roll.result).toBe(testHigh)
+    expect(roll.data)
+      .toBeInstanceOf(Object)
       .toHaveProperty('type')
-    expect(typeof result.value).toBe('number')
-    expect(result.results).toBeInstanceOf(Array)
-    expect(typeof result.type).toBe('string')
-    expect(result.type).toBe('advantage')
+      .toHaveProperty('rolls')
+    expect(roll.data.rolls).toBeInstanceOf(Array).toHaveLength(2)
+    expect(roll.data.type).toBe('advantage')
+    expect(roll.data.rolls[0]).toBe(testLow)
+    expect(roll.data.rolls[1]).toBe(testHigh)
   })
 
   test('rollAdvantage returns the proper format (when numbers match: 18)', () => {
     const dice = new Dice()
+    const testLow = 18
+    const testHigh = 18
 
-    jest.spyOn(dice, 'rollMultiple').mockReturnValue([18, 18])
-    let result = dice.rollAdvantage()
+    jest.spyOn(dice, 'rollMultiple').mockReturnValue([testLow, testHigh])
+    const roll = dice.rollAdvantage()
     jest.spyOn(dice, 'rollMultiple').mockRestore()
 
-    expect(result)
+    expect(roll)
       .toBeInstanceOf(Object)
-      .toHaveProperty('value')
-      .toHaveProperty('results')
+      .toHaveProperty('result')
+      .toHaveProperty('data')
+    expect(roll.result).toBe(testHigh)
+    expect(roll.data)
+      .toBeInstanceOf(Object)
       .toHaveProperty('type')
-    expect(typeof result.value).toBe('number')
-    expect(result.results).toBeInstanceOf(Array)
-    expect(typeof result.type).toBe('string')
-    expect(result.type).toBe('advantage')
+      .toHaveProperty('rolls')
+    expect(roll.data.rolls).toBeInstanceOf(Array).toHaveLength(2)
+    expect(roll.data.type).toBe('advantage')
+    expect(roll.data.rolls[0]).toBe(testLow)
+    expect(roll.data.rolls[1]).toBe(testHigh)
   })
 
   test('rollDisadvantage returns the proper format (6)', () => {
     const dice = new Dice()
+    const testLow = 6
+    const testHigh = 16
 
-    jest.spyOn(dice, 'rollMultiple').mockReturnValue([6, 16])
-    let result = dice.rollDisadvantage()
+    jest.spyOn(dice, 'rollMultiple').mockReturnValue([testLow, testHigh])
+    const roll = dice.rollAdvantage()
     jest.spyOn(dice, 'rollMultiple').mockRestore()
 
-    expect(result)
+    expect(roll)
       .toBeInstanceOf(Object)
-      .toHaveProperty('value')
-      .toHaveProperty('results')
+      .toHaveProperty('result')
+      .toHaveProperty('data')
+    expect(roll.result).toBe(testLow)
+    expect(roll.data)
+      .toBeInstanceOf(Object)
       .toHaveProperty('type')
-    expect(typeof result.value).toBe('number')
-    expect(result.results).toBeInstanceOf(Array)
-    expect(typeof result.type).toBe('string')
-    expect(result.type).toBe('disadvantage')
-    expect(result.value).toBe(6)
+      .toHaveProperty('rolls')
+    expect(roll.data.rolls).toBeInstanceOf(Array).toHaveLength(2)
+    expect(roll.data.type).toBe('advantage')
+    expect(roll.data.rolls[0]).toBe(testLow)
+    expect(roll.data.rolls[1]).toBe(testHigh)
   })
 
   test('rollDisadvantage returns the proper format (when numbers match, 10)', () => {
     const dice = new Dice()
+    const testLow = 10
+    const testHigh = 10
 
-    jest.spyOn(dice, 'rollMultiple').mockReturnValue([10, 10])
-    let result = dice.rollDisadvantage()
+    jest.spyOn(dice, 'rollMultiple').mockReturnValue([testLow, testHigh])
+    const roll = dice.rollAdvantage()
     jest.spyOn(dice, 'rollMultiple').mockRestore()
 
-    expect(result)
+    expect(roll)
       .toBeInstanceOf(Object)
-      .toHaveProperty('value')
-      .toHaveProperty('results')
+      .toHaveProperty('result')
+      .toHaveProperty('data')
+    expect(roll.result).toBe(testLow)
+    expect(roll.data)
+      .toBeInstanceOf(Object)
       .toHaveProperty('type')
-    expect(typeof result.value).toBe('number')
-    expect(result.results).toBeInstanceOf(Array)
-    expect(typeof result.type).toBe('string')
-    expect(result.type).toBe('disadvantage')
-    expect(result.value).toBe(10)
+      .toHaveProperty('rolls')
+    expect(roll.data.rolls).toBeInstanceOf(Array).toHaveLength(2)
+    expect(roll.data.type).toBe('advantage')
+    expect(roll.data.rolls[0]).toBe(testLow)
+    expect(roll.data.rolls[1]).toBe(testHigh)
   })
 })

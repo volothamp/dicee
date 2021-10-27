@@ -1,5 +1,7 @@
 export default interface AdvantageDisadvantageRoll {
-  value: number
-  results: number[]
-  type: 'advantage' | 'disadvantage'
+  result: number
+  data: {
+    type: 'advantage' | 'disadvantage'
+    rolls: number[]
+  }
 }
