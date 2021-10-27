@@ -34,16 +34,14 @@ describe('Dice: Initialization', () => {
   })
 
   test('Initializing with error should not return a value', () => {
-    let diceTypeError
-    let diceRangeError
-
-    // @ts-ignore
-    diceTypeError = new Dice('wow')
-    // @ts-ignore
-    diceRangeError = new Dice(-1)
-
-    expect(diceTypeError).not.toBeInstanceOf(Dice)
-    expect(diceRangeError).not.toBeInstanceOf(Dice)
+    expect(
+      // @ts-ignore
+      () => new Dice('wow'),
+    ).not.toBeInstanceOf(Dice)
+    expect(
+      // @ts-ignore
+      () => new Dice(-1),
+    ).not.toBeInstanceOf(Dice)
   })
 
   test('Initializing with no passed value should be a d20', () => {
@@ -190,7 +188,7 @@ describe('Dice: Rolling Advantage/Disadvantage', () => {
     const testHigh = 16
 
     jest.spyOn(dice, 'rollMultiple').mockReturnValue([testLow, testHigh])
-    const roll = dice.rollAdvantage()
+    const roll = dice.rollDisadvantage()
     jest.spyOn(dice, 'rollMultiple').mockRestore()
 
     expect(roll)
@@ -203,7 +201,7 @@ describe('Dice: Rolling Advantage/Disadvantage', () => {
       .toHaveProperty('type')
       .toHaveProperty('rolls')
     expect(roll.data.rolls).toBeInstanceOf(Array).toHaveLength(2)
-    expect(roll.data.type).toBe('advantage')
+    expect(roll.data.type).toBe('disadvantage')
     expect(roll.data.rolls[0]).toBe(testLow)
     expect(roll.data.rolls[1]).toBe(testHigh)
   })
@@ -214,7 +212,7 @@ describe('Dice: Rolling Advantage/Disadvantage', () => {
     const testHigh = 10
 
     jest.spyOn(dice, 'rollMultiple').mockReturnValue([testLow, testHigh])
-    const roll = dice.rollAdvantage()
+    const roll = dice.rollDisadvantage()
     jest.spyOn(dice, 'rollMultiple').mockRestore()
 
     expect(roll)
@@ -227,7 +225,7 @@ describe('Dice: Rolling Advantage/Disadvantage', () => {
       .toHaveProperty('type')
       .toHaveProperty('rolls')
     expect(roll.data.rolls).toBeInstanceOf(Array).toHaveLength(2)
-    expect(roll.data.type).toBe('advantage')
+    expect(roll.data.type).toBe('disadvantage')
     expect(roll.data.rolls[0]).toBe(testLow)
     expect(roll.data.rolls[1]).toBe(testHigh)
   })
